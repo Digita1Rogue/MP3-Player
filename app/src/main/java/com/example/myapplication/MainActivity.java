@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE = 1;
-    ArrayList<MusicFiles> musicFiles;
+    static ArrayList<MusicFiles> musicFiles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         permission();
 
-        initViewPager();
+
     }
 
     private void permission() {
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         else{
             Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show();
             musicFiles = getAllAudio(this);
+            initViewPager();
         }
     }
 
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 //DO WHATEVER YOU WANT PERMISSION RELATED;
                 Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show();
                 musicFiles = getAllAudio(this);
+                initViewPager();
             }
             else {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CODE);
