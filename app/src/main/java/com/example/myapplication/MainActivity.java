@@ -36,14 +36,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         permission();
-
-
     }
 
     private void permission() {
-        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            !=PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CODE);
+        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
         }
         else{
             Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show();
@@ -57,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if( requestCode == REQUEST_CODE){
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                //DO WHATEVER YOU WANT PERMISSION RELATED;
                 Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show();
                 musicFiles = getAllAudio(this);
                 initViewPager();
@@ -135,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
                 MusicFiles musicFiles = new MusicFiles(path,title,artist,album,duration);
                 // take log.e for check
-                Log.e("Path: " + path, "Album: " + album);
+
                 tempAudioList.add(musicFiles);
             }
             cursor.close();
