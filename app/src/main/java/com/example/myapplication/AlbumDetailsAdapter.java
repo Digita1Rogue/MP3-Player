@@ -9,43 +9,48 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder> {
+public class AlbumDetailsAdapter extends RecyclerView.Adapter<AlbumDetailsAdapter.MyHolder> {
 
     private final Context mContext;
-    private final ArrayList<MusicFiles> mFiles;
+    static ArrayList<MusicFiles> albumFiles;
+    View view;
 
-    MusicAdapter(Context mContext, ArrayList<MusicFiles> mFiles){
+    public AlbumDetailsAdapter(Context mContext, ArrayList<MusicFiles> albumFiles) {
         this.mContext = mContext;
-        this.mFiles = mFiles;
+        AlbumDetailsAdapter.albumFiles = albumFiles;
     }
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.music_items, parent, false);
-        return new MyViewHolder(view);
+    public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        view = LayoutInflater.from(mContext).inflate(R.layout.music_items, parent, false);
+        return new MyHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.file_name.setText(mFiles.get(position).getTitle());
-        byte[] image = getAlbumArt(mFiles.get(position).getPath());
+    public void onBindViewHolder(@NonNull MyHolder holder, @SuppressLint("RecyclerView") int position) {
+        holder.album_name.setText(albumFiles.get(position).getTitle());
+        byte[] image = getAlbumArt(albumFiles.get(position).getPath());
         if(image != null){
-            Glide.with(mContext).asBitmap().load(image).into(holder.album_art);
+            Glide.with(mContext).asBitmap().load(image).into(holder.album_image);
         }
         else{
-            Glide.with(mContext).load(R.drawable.no_image).into(holder.album_art);
-            System.out.println("Image not found");
+            Glide.with(mContext).load(R.drawable.no_image).into(holder.album_image);
         }
+
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, PlayerActivity.class);
             intent.putExtra("position", position);
+            intent.putExtra("sender", "albumDetails");
             mContext.startActivity(intent);
         });
 
@@ -53,19 +58,19 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
 
     @Override
     public int getItemCount() {
-        return mFiles.size();
+        return albumFiles.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView file_name;
-        ImageView album_art;
-
-        public MyViewHolder(@NonNull View itemView) {
+    public static class MyHolder extends RecyclerView.ViewHolder {
+        ImageView album_image;
+        TextView album_name;
+        public MyHolder(@NonNull View itemView) {
             super(itemView);
-            file_name = itemView.findViewById(R.id.music_file_name);
-            album_art = itemView.findViewById(R.id.music_img);
+            album_image = itemView.findViewById(R.id.music_img);
+            album_name = itemView.findViewById(R.id.music_file_name);
         }
     }
+
     private byte[] getAlbumArt(String uri){
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(uri);

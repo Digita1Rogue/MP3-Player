@@ -10,20 +10,15 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.widget.TableLayout;
-import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     static ArrayList<MusicFiles> musicFiles;
 
     static boolean shuffleBoolean = false, repeatBoolean = false;
+
+    static ArrayList<MusicFiles> albums = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
         }
         else{
-            Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show();
             musicFiles = getAllAudio(this);
             initViewPager();
         }
@@ -56,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if( requestCode == REQUEST_CODE){
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show();
                 musicFiles = getAllAudio(this);
                 initViewPager();
             }
@@ -79,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static class ViewPagerAdapter extends FragmentPagerAdapter{
 
-        private ArrayList<Fragment> fragments;
-        private ArrayList<String> titles;
+        private final ArrayList<Fragment> fragments;
+        private final ArrayList<String> titles;
 
         public ViewPagerAdapter(@NonNull FragmentManager fm) {
             super(fm);
@@ -113,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static ArrayList<MusicFiles> getAllAudio(Context context){
+        ArrayList<String> duplicate = new ArrayList<>();
         ArrayList<MusicFiles> tempAudioList = new ArrayList<>();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {
@@ -135,6 +131,10 @@ public class MainActivity extends AppCompatActivity {
                 // take log.e for check
 
                 tempAudioList.add(musicFiles);
+                if(!duplicate.contains(album)){
+                    albums.add(musicFiles);
+                    duplicate.add(album);
+                }
             }
             cursor.close();
         }
