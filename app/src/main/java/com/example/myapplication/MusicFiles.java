@@ -8,6 +8,7 @@ public class MusicFiles {
     private final String duration;
 
 
+    //Metadata class for media files
     public MusicFiles(String path, String title, String artist, String album, String duration) {
         this.path = path;
         this.title = title;

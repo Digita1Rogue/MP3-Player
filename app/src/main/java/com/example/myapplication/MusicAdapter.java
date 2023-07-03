@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import java.io.IOException;
 import java.util.ArrayList;
 
+// Responsible for the look of music item
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder> {
 
     private final Context mContext;
@@ -34,14 +35,15 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        // sonng name and dir path
         holder.file_name.setText(mFiles.get(position).getTitle());
         byte[] image = getAlbumArt(mFiles.get(position).getPath());
+        // Uses an Glide ( image loading framework - src https://github.com/bumptech/glide) for scrolling a list of images smooth and fast
         if(image != null){
             Glide.with(mContext).asBitmap().load(image).into(holder.album_art);
         }
         else{
             Glide.with(mContext).load(R.drawable.no_image).into(holder.album_art);
-            System.out.println("Image not found");
         }
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, PlayerActivity.class);

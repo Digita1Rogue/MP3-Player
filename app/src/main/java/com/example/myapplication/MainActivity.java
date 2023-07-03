@@ -29,7 +29,14 @@ public class MainActivity extends AppCompatActivity {
     static boolean shuffleBoolean = false, repeatBoolean = false;
 
     static ArrayList<MusicFiles> albums = new ArrayList<>();
+    /*
+    Start application
+    Request Storage permission
+    Set main Views of Fragments
+    Get all data from storage
+     */
 
+    // Set the main layout
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         permission();
     }
 
+    // Cheque request access to phone storage at the start of activity to get storage Media files
     private void permission() {
         if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
@@ -47,9 +55,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Actual permission window and second request to access storage
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         if( requestCode == REQUEST_CODE){
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 musicFiles = getAllAudio(this);
@@ -61,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Set fragments on linear layout and adding adapter
     private void initViewPager() {
         ViewPager viewPager = findViewById(R.id.viewpager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
@@ -72,19 +83,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public static class ViewPagerAdapter extends FragmentPagerAdapter{
+    // keep Fragments to user access
+    private static class ViewPagerAdapter extends FragmentPagerAdapter{
 
         private final ArrayList<Fragment> fragments;
         private final ArrayList<String> titles;
 
-        public ViewPagerAdapter(@NonNull FragmentManager fm) {
+        private ViewPagerAdapter(@NonNull FragmentManager fm) {
             super(fm);
             this.fragments = new ArrayList<>();
             this.titles = new ArrayList<>();
 
         }
 
-        void addFragment(Fragment fragment, String title){
+        private void addFragment(Fragment fragment, String title){
             this.fragments.add(fragment);
             this.titles.add(title);
         }
@@ -107,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Extract "metadata" about musicFiles without duplicates
     public static ArrayList<MusicFiles> getAllAudio(Context context){
         ArrayList<String> duplicate = new ArrayList<>();
         ArrayList<MusicFiles> tempAudioList = new ArrayList<>();
